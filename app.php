@@ -14,13 +14,19 @@ spl_autoload_register(function ($className) {
     include_once($class);
 });
 
-$console = new Application();
+try {
+    $console = new Application();
 
-/** @var Command[] $commands */
-$commands = [];
+    /** @var Command[] $commands */
+    $commands = [
+        new \Commands\ShowInputArgs(),
+    ];
 
-foreach ($commands as $command) {
-    $console->add($command);
+    foreach ($commands as $command) {
+        $console->add($command);
+    }
+
+    $console->run();
+} catch (\Console\Io\InputException $e) {
+    echo "Input error: {$e->getMessage()}\n";
 }
-
-$console->run();

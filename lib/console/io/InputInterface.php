@@ -4,7 +4,7 @@ namespace Console\Io;
 
 interface InputInterface
 {
-    function getCommand(): string;
+    function getCommand(): ?string;
 
     /**
      * @return InputArg[]

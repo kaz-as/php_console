@@ -50,9 +50,20 @@ class Application
     function run()
     {
         $name = $this->input->getCommand();
+
+        if (!$name) {
+            $this->output->out('Registered commands:');
+            foreach ($this->commands as $command) {
+                $this->output->out("----  {$command->getName()}");
+                $this->output->out("      {$command->getDescription()}");
+            }
+            return;
+        }
+
         if (empty($this->commands[$name])) {
             throw new InputException("Command name '$name' is not registered");
         }
+
         if ($this->input->getInputArg($this->argHelp)?->isArgument()) {
             $this->output->out($this->commands[$name]->getDescription());
         } else {

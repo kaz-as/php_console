@@ -82,7 +82,7 @@ class Parameter implements InputArg
                     $currentPos++;
                     return $arguments;
                 }
-            } elseif ($badSymbols[$c]) {
+            } elseif (isset($badSymbols[$c])) {
                 throw new InputException("Unexpected '$c' while argument parsing");
             } else {
                 $word .= $c;
@@ -113,7 +113,7 @@ class Parameter implements InputArg
                 $currentPos++;
                 break;
             }
-            if ($badSymbols[$c]) {
+            if (isset($badSymbols[$c])) {
                 throw new InputException("Unexpected '$c' while argument parsing");
             }
             $name .= $c;
@@ -122,9 +122,11 @@ class Parameter implements InputArg
             throw new InputException('Expected \''.static::PARAMETER_EQUALS.'\', got end of string');
         }
 
-        if ($currentPos == static::ARGUMENT_START) {
+        if ($s[$currentPos] == static::ARGUMENT_START) {
             $currentPos++;
-            return [$name => self::parseArguments($s, $currentPos)];
+            $args = self::parseArguments($s, $currentPos);
+            $currentPos++;
+            return [$name => $args];
         }
 
         $word = '';
@@ -138,10 +140,13 @@ class Parameter implements InputArg
         for (; $currentPos < strlen($s); $currentPos++) {
             $c = $s[$currentPos];
             if ($c == static::PARAMETER_END) {
+                if (!$word) {
+                    throw new InputException('Empty parameter');
+                }
                 $currentPos++;
                 return [$name => $word];
             }
-            if ($badSymbols[$c]) {
+            if (isset($badSymbols[$c])) {
                 throw new InputException("Unexpected '$c' while argument parsing");
             }
             $word .= $c;
@@ -158,6 +163,10 @@ class Parameter implements InputArg
         $nextPosition = 1;
         if ($s[0] == static::ARGUMENT_START) {
             $argumentStrings = static::parseArguments($s, $nextPosition);
+            if ($nextPosition != strlen($s)) {
+                throw new InputException('Only space is allowed after \'' . static::ARGUMENT_END
+                    . '\' if it is an argument');
+            }
             $arguments = [];
             foreach ($argumentStrings as $str) {
                 $arguments[] = new static($str, true);
@@ -166,14 +175,32 @@ class Parameter implements InputArg
         }
         if ($s[0] == static::PARAMETER_START) {
             $p = static::parseParameters($s, $nextPosition);
+            if ($nextPosition != strlen($s)) {
+                throw new InputException('Only space is allowed after \'' . static::PARAMETER_END
+                    . '\' if it is a parameter');
+            }
             $pv = current($p);
             return [new static(
                 key($p),
                 false,
-                is_array($pv) ? current($pv) : [current($pv)],
-                !is_array(current($pv))
+                is_array($pv) ? $pv : [$pv],
+                !is_array($pv)
             )];
         }
-        throw new InputException("$s is neither a parameter nor an argument");
+
+        $badSymbols = [
+            static::DELIMITER => true,
+            static::ARGUMENT_END => true,
+            static::ARGUMENT_START => true,
+            static::PARAMETER_START => true,
+            static::PARAMETER_END => true,
+            static::PARAMETER_EQUALS => true,
+        ];
+        for ($i = 0; $i < strlen($s); $i++){
+             if (isset($badSymbols[$s[$i]])) {
+                 throw new InputException("Bad agrument: '$s'");
+             }
+        }
+        return [new static($s, true)];
     }
 }

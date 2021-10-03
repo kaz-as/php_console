@@ -8,7 +8,7 @@ use Console\Parameter;
 
 class Input implements \Console\Io\InputInterface
 {
-    private string $commandName;
+    private ?string $commandName;
     /**
      * Группировка — по имени.
      * @var InputArg[]
@@ -21,10 +21,19 @@ class Input implements \Console\Io\InputInterface
             /** @var InputArg $argClass */
             $argClass = Parameter::class;
         }
+
         $args = $_SERVER['argv'];
-        if (count($args) < 2) {
-            throw new InputException('Please specify the command name');
+        if (count($args) < 1) {
+            throw new InputException('Please check you terminal');
         }
+
+        $this->args = [];
+
+        if (count($args) == 1) {
+            $this->commandName = null;
+            return;
+        }
+
         array_shift($args);
         $this->commandName = array_shift($args);
         foreach ($args as $arg) {
@@ -35,7 +44,7 @@ class Input implements \Console\Io\InputInterface
         }
     }
 
-    function getCommand(): string
+    function getCommand(): ?string
     {
         return $this->commandName;
     }
@@ -50,6 +59,6 @@ class Input implements \Console\Io\InputInterface
 
     function getInputArg(string $name): ?InputArg
     {
-        return $this->args[$name];
+        return $this->args[$name] ?? null;
     }
 }
