@@ -2,6 +2,7 @@
 
 namespace Console\Terminal;
 
+/** Вывод с консоли */
 class Output implements \Console\Io\OutputInterface
 {
 

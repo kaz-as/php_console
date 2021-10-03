@@ -4,8 +4,8 @@ namespace Console\Terminal;
 
 use Console\Io\InputArg;
 use Console\Io\InputException;
-use Console\Parameter;
 
+/** Ввод с консоли */
 class Input implements \Console\Io\InputInterface
 {
     private ?string $commandName;

@@ -2,6 +2,7 @@
 
 use Console\Application;
 use Console\Command;
+use Console\Io\IoException;
 
 if (php_sapi_name() !== 'cli') {
     exit;
@@ -27,6 +28,6 @@ try {
     }
 
     $console->run();
-} catch (\Console\Io\InputException $e) {
+} catch (IoException $e) {
     echo "Input error: {$e->getMessage()}\n";
 }

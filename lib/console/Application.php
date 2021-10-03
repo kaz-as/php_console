@@ -8,6 +8,10 @@ use Console\Io\OutputInterface;
 use Console\Terminal\Input;
 use Console\Terminal\Output;
 
+/**
+ * Библиотека запуска команд
+ * @author Alexander Kazantsev
+ */
 class Application
 {
     /**
@@ -39,12 +43,14 @@ class Application
         $this->output = $output;
     }
 
+    /** Зарегистрировать команду */
     function add(Command $command)
     {
         $this->commands[$command->getName()] = $command;
     }
 
     /**
+     * Определение вызванной команды и её запуск
      * @throws InputException
      */
     function run()

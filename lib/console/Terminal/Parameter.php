@@ -1,10 +1,11 @@
 <?php
 
-namespace Console;
+namespace Console\Terminal;
 
 use Console\Io\InputArg;
 use Console\Io\InputException;
 
+/** Входящий параметр, как он приходит из консоли */
 class Parameter implements InputArg
 {
     /**
@@ -14,7 +15,7 @@ class Parameter implements InputArg
      * @param bool $soleValue
      * @throws InputException
      */
-    function __construct(
+    protected function __construct(
         private string $name,
         private bool $isArgument,
         private ?array $values = null,
@@ -34,6 +35,10 @@ class Parameter implements InputArg
         return $this->name;
     }
 
+    /**
+     * Если это аргумент, то null.
+     * Если значение параметра единственно, это может быть [p={v}], тогда ложь, или [p=v], тогда истина.
+     */
     function isSoleValue(): ?bool
     {
         return $this->soleValue;

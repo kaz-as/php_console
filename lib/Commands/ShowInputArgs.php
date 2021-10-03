@@ -5,6 +5,9 @@ namespace Commands;
 use Console\Io\InputInterface;
 use Console\Io\OutputInterface;
 
+/**
+ * Тестовая команда. Выводит все входящие параметры команды.
+ */
 class ShowInputArgs implements \Console\Command
 {
 
