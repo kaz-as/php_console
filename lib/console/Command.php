@@ -2,7 +2,12 @@
 
 namespace Console;
 
-class Command
+use Console\Io\InputInterface;
+use Console\Io\OutputInterface;
+
+interface Command
 {
-    // todo
+    function getName(): string;
+    function getDescription(): string;
+    function execute(InputInterface $input, OutputInterface $output);
 }

@@ -1,15 +1,18 @@
 <?php
 
-namespace App;
-
 use Console\Application;
 use Console\Command;
-
-require_once 'lib/console/include.php';
 
 if (php_sapi_name() !== 'cli') {
     exit;
 }
+
+spl_autoload_register(function ($className) {
+    $psrDir = 'lib';
+    $className = str_replace("\\", '/', $className);
+    $class = "$psrDir/$className.php";
+    include_once($class);
+});
 
 $console = new Application();
 
