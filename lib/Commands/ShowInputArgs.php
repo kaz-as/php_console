@@ -45,7 +45,7 @@ class ShowInputArgs implements \Console\Command
 
         if ($options) {
             $output->out();
-            $output->out('Arguments:');
+            $output->out('Options:');
             foreach ($options as $option) {
                 $output->out("   - {$option->getName()}");
                 if (!$option->getValues()) {
