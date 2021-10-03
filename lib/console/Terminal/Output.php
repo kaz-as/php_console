@@ -7,6 +7,9 @@ class Output implements \Console\Io\OutputInterface
 
     function out(string $s = '', bool $newline = true): void
     {
-        // TODO: Implement out() method.
+        echo $s;
+        if ($newline) {
+            echo PHP_EOL;
+        }
     }
 }

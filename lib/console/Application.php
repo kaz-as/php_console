@@ -44,13 +44,16 @@ class Application
         $this->commands[$command->getName()] = $command;
     }
 
+    /**
+     * @throws InputException
+     */
     function run()
     {
         $name = $this->input->getCommand();
         if (empty($this->commands[$name])) {
             throw new InputException("Command name '$name' is not registered");
         }
-        if ($this->input->getArgument($this->argHelp)) {
+        if ($this->input->getInputArg($this->argHelp)?->isArgument()) {
             $this->output->out($this->commands[$name]->getDescription());
         } else {
             $this->commands[$name]->execute($this->input, $this->output);

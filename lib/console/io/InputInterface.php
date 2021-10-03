@@ -7,16 +7,9 @@ interface InputInterface
     function getCommand(): string;
 
     /**
-     * @return Argument[]
+     * @return InputArg[]
      */
-    function getArguments(): array;
+    function getInputArgs(): array;
 
-    function getArgument(string $name): ?Argument;
-
-    /**
-     * @return Parameter[]
-     */
-    function getParameters(): array;
-
-    function getParameter(string $name): ?Parameter;
+    function getInputArg(string $name): ?InputArg;
 }

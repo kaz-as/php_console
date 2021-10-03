@@ -2,40 +2,54 @@
 
 namespace Console\Terminal;
 
-use Console\Io\Argument;
-use Console\Io\Parameter;
+use Console\Io\InputArg;
+use Console\Io\InputException;
+use Console\Parameter;
 
 class Input implements \Console\Io\InputInterface
 {
+    private string $commandName;
+    /**
+     * Группировка — по имени.
+     * @var InputArg[]
+     */
+    private array $args;
+
+    function __construct(?string $argClass = null)
+    {
+        if (!$argClass) {
+            /** @var InputArg $argClass */
+            $argClass = Parameter::class;
+        }
+        $args = $_SERVER['argv'];
+        if (count($args) < 2) {
+            throw new InputException('Please specify the command name');
+        }
+        array_shift($args);
+        $this->commandName = array_shift($args);
+        foreach ($args as $arg) {
+            $params = $argClass::parse($arg);
+            foreach ($params as $param) {
+                $this->args[$param->getName()] = $param;
+            }
+        }
+    }
 
     function getCommand(): string
     {
-        // TODO: Implement getCommand() method.
+        return $this->commandName;
     }
 
     /**
      * @inheritDoc
      */
-    function getArguments(): array
+    function getInputArgs(): array
     {
-        // TODO: Implement getArguments() method.
+        return array_values($this->args);
     }
 
-    function getArgument(string $name): Argument
+    function getInputArg(string $name): ?InputArg
     {
-        // TODO: Implement getArgument() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    function getParameters(): array
-    {
-        // TODO: Implement getParameters() method.
-    }
-
-    function getParameter(string $name): Parameter
-    {
-        // TODO: Implement getParameter() method.
+        return $this->args[$name];
     }
 }
